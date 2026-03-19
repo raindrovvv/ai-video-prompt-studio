@@ -300,6 +300,11 @@ select:focus {
   box-shadow: 0 0 0 4px rgba(240, 185, 103, 0.12);
 }
 
+select option {
+  background: #f4efe8;
+  color: #18212b;
+}
+
 .output-panel {
   display: flex;
   flex-direction: column;
