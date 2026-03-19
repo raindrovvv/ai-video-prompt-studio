@@ -26,6 +26,44 @@ cd D:\Project\ai-video-prompt-studio
 
 브라우저에서 `http://localhost:3020`으로 접속하면 됩니다.
 
+## For Other Users
+
+이 프로젝트는 공용 API 키를 공유하지 않습니다.  
+앱을 실행한 각 사용자의 로컬 Codex 로그인 상태를 그대로 사용합니다.
+
+### 1. Codex CLI 설치
+
+먼저 각자 PC에 Codex CLI가 설치되어 있어야 합니다.
+
+### 2. 자기 계정으로 로그인
+
+```powershell
+codex login
+codex login status
+```
+
+정상이라면 로그인 상태가 표시됩니다.
+
+### 3. 프로젝트 실행
+
+```powershell
+cd D:\Project\ai-video-prompt-studio
+.\start.ps1
+```
+
+앱 오른쪽 위에 `Connected`가 뜨면 그 사용자의 Codex가 연결된 상태입니다.
+
+### 4. Codex를 못 찾는 경우
+
+일부 환경에서는 `codex` 경로를 자동으로 못 찾을 수 있습니다. 그럴 때는 현재 터미널 세션에서만 아래처럼 지정하면 됩니다.
+
+```powershell
+$env:CODEX_BIN = "$env:USERPROFILE\AppData\Roaming\npm\codex.cmd"
+.\start.ps1
+```
+
+이 방식은 전역 설정이 아니라 현재 실행 세션에만 적용됩니다.
+
 ## Recommended Workflow
 
 1. 프리셋을 고릅니다.
