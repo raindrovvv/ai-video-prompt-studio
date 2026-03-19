@@ -14,6 +14,18 @@ const principlesGrid = document.querySelector("#principles-grid");
 const presetRow = document.querySelector("#preset-row");
 const presetDescription = document.querySelector("#preset-description");
 const presetCurrentLabel = document.querySelector("#preset-current-label");
+const viewTabs = [...document.querySelectorAll("[data-view-tab]")];
+const viewPanels = [...document.querySelectorAll("[data-view-panel]")];
+const codexProgressCard = document.querySelector("#codex-progress-card");
+const codexProgressTitle = document.querySelector("#codex-progress-title");
+const codexProgressText = document.querySelector("#codex-progress-text");
+const codexProgressFill = document.querySelector("#codex-progress-fill");
+const selectionHelperTargets = {
+  shotSize: document.querySelector("#shotSize-helper"),
+  cameraAngle: document.querySelector("#cameraAngle-helper"),
+  cameraMovement: document.querySelector("#cameraMovement-helper"),
+  lens: document.querySelector("#lens-helper"),
+};
 
 const PROMPT_FIELDS = ["universal", "kling", "runway", "veo"];
 const REFINED_FIELDS = {
@@ -22,6 +34,7 @@ const REFINED_FIELDS = {
   runwayPrompt: "#refined-runway-output",
   veoPrompt: "#refined-veo-output",
 };
+let codexProgressTimer;
 
 const principles = [
   {
@@ -105,6 +118,147 @@ const presetLibrary = {
   },
 };
 
+const selectionGuide = {
+  shotSize: {
+    "tight close-up": {
+      reflectedAs: "피사체를 아주 가까이 붙여 디테일 위주로 보이게 합니다.",
+      benefit: "감정 변화나 텍스처를 강하게 강조할 수 있습니다.",
+      whenToUse: "뷰티, 음식 클로즈업, 표정 한 포인트를 확실히 잡고 싶을 때 좋습니다.",
+    },
+    "close-up": {
+      reflectedAs: "얼굴이나 핵심 오브젝트가 프레임을 크게 차지하도록 반영됩니다.",
+      benefit: "시선 분산이 적고 핵심 정보 전달이 빠릅니다.",
+      whenToUse: "제품 디테일, 인물 리액션, 감정 전달이 중요할 때 추천합니다.",
+    },
+    "tight medium close-up": {
+      reflectedAs: "얼굴과 손동작이 잘 읽히는 타이트한 상반신 샷으로 반영됩니다.",
+      benefit: "표정과 제스처를 동시에 챙기기 좋습니다.",
+      whenToUse: "SNS 숏폼, 푸드 리액션, 손동작이 중요한 컷에 잘 맞습니다.",
+    },
+    "medium close-up": {
+      reflectedAs: "인물 또는 제품을 안정적으로 가까이 담는 표준 광고 샷으로 반영됩니다.",
+      benefit: "디테일과 공간감을 균형 있게 가져갈 수 있습니다.",
+      whenToUse: "광고형 기본값으로 가장 무난하고 실패 확률이 낮습니다.",
+    },
+    "medium shot": {
+      reflectedAs: "상반신에서 허리 정도까지 보이는 더 넉넉한 프레이밍으로 반영됩니다.",
+      benefit: "동작과 환경 맥락을 함께 보여주기 좋습니다.",
+      whenToUse: "시네마틱 톤, 제스처가 큰 장면, 공간감을 살리고 싶을 때 좋습니다.",
+    },
+    "medium wide shot": {
+      reflectedAs: "피사체와 주변 공간을 함께 읽히는 중간 거리 샷으로 반영됩니다.",
+      benefit: "인물과 배경 관계를 같이 전달할 수 있습니다.",
+      whenToUse: "장소감이나 동선이 중요한 컷에서 유리합니다.",
+    },
+    "wide shot": {
+      reflectedAs: "피사체보다 장면 전체를 보여주는 넓은 샷으로 반영됩니다.",
+      benefit: "배경 분위기와 스케일감을 살리기 좋습니다.",
+      whenToUse: "오프닝 컷, 공간 소개, text-to-video에서 장면 구축이 필요할 때 적합합니다.",
+    },
+  },
+  cameraAngle: {
+    "eye level": {
+      reflectedAs: "관찰자가 자연스럽게 바라보는 높이의 중립적 시점으로 들어갑니다.",
+      benefit: "가장 안정적이고 위화감이 적습니다.",
+      whenToUse: "광고, 인터뷰형, 일반적인 인물/제품 컷의 기본값으로 좋습니다.",
+    },
+    "slightly low angle": {
+      reflectedAs: "조금 아래에서 올려다보는 시점으로 반영됩니다.",
+      benefit: "피사체를 조금 더 존재감 있게 보이게 합니다.",
+      whenToUse: "시네마틱 톤이나 주인공감을 조금 강화하고 싶을 때 좋습니다.",
+    },
+    "low angle": {
+      reflectedAs: "아래에서 강하게 올려다보는 시점으로 반영됩니다.",
+      benefit: "강한 인상과 힘 있는 이미지를 만들 수 있습니다.",
+      whenToUse: "영웅적, 패션, 강한 브랜드 무드가 필요할 때 쓰면 좋습니다.",
+    },
+    "slightly high angle": {
+      reflectedAs: "조금 위에서 내려다보는 시점으로 들어갑니다.",
+      benefit: "상황을 더 부드럽고 가볍게 보이게 할 수 있습니다.",
+      whenToUse: "귀여운 톤, 음식 상차림, 소품이 함께 보이는 장면에서 유리합니다.",
+    },
+    "high angle": {
+      reflectedAs: "위에서 내려다보는 구도가 더 강하게 반영됩니다.",
+      benefit: "배치와 구성, 테이블 위 오브젝트를 한눈에 보여주기 좋습니다.",
+      whenToUse: "푸드, 제품 레이아웃, 장면 배치를 설명하고 싶을 때 좋습니다.",
+    },
+    "overhead/top-down": {
+      reflectedAs: "정상부에서 수직에 가깝게 내려다보는 샷으로 반영됩니다.",
+      benefit: "정리된 배치와 그래픽한 느낌을 만들기 쉽습니다.",
+      whenToUse: "레시피, 언박싱, 테이블탑 제품 컷에 특히 잘 맞습니다.",
+    },
+  },
+  cameraMovement: {
+    "locked-off static": {
+      reflectedAs: "카메라가 거의 움직이지 않는 고정 샷으로 반영됩니다.",
+      benefit: "가장 안정적이고 피사체 움직임에 집중하기 좋습니다.",
+      whenToUse: "모션 오류를 줄이고 싶거나 제품 디테일 자체를 강조할 때 좋습니다.",
+    },
+    "quick gentle push-in": {
+      reflectedAs: "짧고 부드럽게 다가가는 무브로 반영됩니다.",
+      benefit: "숏폼에서 훅을 빠르게 만들기 좋습니다.",
+      whenToUse: "SNS 숏폼, 4초 안팎의 짧은 컷, 초반 집중이 중요할 때 추천합니다.",
+    },
+    "slow dolly-in": {
+      reflectedAs: "천천히 앞으로 들어가는 전형적인 집중 무브로 반영됩니다.",
+      benefit: "광고와 시네마틱 둘 다에서 안정적으로 먹힙니다.",
+      whenToUse: "가장 범용적이라 기본값으로 쓰기 좋습니다.",
+    },
+    "slow dolly-out": {
+      reflectedAs: "천천히 뒤로 빠지는 무브로 반영됩니다.",
+      benefit: "여운이나 공간 확장을 표현하기 좋습니다.",
+      whenToUse: "장면 마무리, 감정 잔상, 공간 공개 컷에서 유용합니다.",
+    },
+    "slow cinematic push-in": {
+      reflectedAs: "조금 더 영화적인 리듬의 느린 접근 샷으로 들어갑니다.",
+      benefit: "무드와 감정선을 자연스럽게 키울 수 있습니다.",
+      whenToUse: "시네마틱 프리셋, 감정 축적, 분위기 강조 컷에 잘 맞습니다.",
+    },
+    "slow pan": {
+      reflectedAs: "좌우로 천천히 훑는 카메라 움직임으로 반영됩니다.",
+      benefit: "배경이나 공간 정보를 자연스럽게 보여줄 수 있습니다.",
+      whenToUse: "장소 소개, 제품 라인업, 장면 분위기 설명에 좋습니다.",
+    },
+    "slow tilt up": {
+      reflectedAs: "아래에서 위 또는 위에서 아래로 천천히 기울이는 무브로 반영됩니다.",
+      benefit: "위계감이나 디테일 공개 순서를 만들기 쉽습니다.",
+      whenToUse: "전신 공개, 제품 실루엣 드러내기, 건물/오브젝트 상승감을 줄 때 좋습니다.",
+    },
+    "handheld subtle drift": {
+      reflectedAs: "미세한 핸드헬드 감성이 섞인 유기적 움직임으로 반영됩니다.",
+      benefit: "너무 딱딱하지 않은 현장감과 생동감을 줍니다.",
+      whenToUse: "다큐 느낌, 라이프스타일 컷, 자연스러운 현장 감성을 원할 때 적합합니다.",
+    },
+  },
+  lens: {
+    "24mm": {
+      reflectedAs: "넓은 화각 느낌이 프롬프트에 보조 정보로 들어갑니다.",
+      benefit: "공간감을 크게 느끼게 할 수 있습니다.",
+      whenToUse: "장면 전체, 공간 소개, dynamic한 왜곡감이 조금 필요할 때 좋습니다.",
+    },
+    "35mm": {
+      reflectedAs: "조금 넓고 자연스러운 시네마틱 화각으로 반영됩니다.",
+      benefit: "공간과 피사체를 같이 살리기 좋습니다.",
+      whenToUse: "시네마틱, 라이프스타일, 숏폼에서 범용성이 높습니다.",
+    },
+    "50mm": {
+      reflectedAs: "가장 표준적인 인물/제품 화각 느낌으로 반영됩니다.",
+      benefit: "왜곡이 적고 안정적으로 예쁘게 나옵니다.",
+      whenToUse: "광고형 기본값으로 가장 무난합니다.",
+    },
+    "85mm": {
+      reflectedAs: "더 압축된 인물 중심 화각 느낌으로 반영됩니다.",
+      benefit: "배경 분리와 고급스러운 인물 클로즈업 무드가 잘 납니다.",
+      whenToUse: "뷰티, 패션, 감정 클로즈업에 잘 맞습니다.",
+    },
+    "100mm macro": {
+      reflectedAs: "초근접 디테일용 매크로 느낌이 보조 정보로 들어갑니다.",
+      benefit: "재질, 표면, 텍스처를 극적으로 보여주기 좋습니다.",
+      whenToUse: "음식 질감, 제품 표면, 디테일 컷에 유용합니다.",
+    },
+  },
+};
+
 function renderPrinciples() {
   principlesGrid.innerHTML = principles
     .map(
@@ -116,6 +270,114 @@ function renderPrinciples() {
       `
     )
     .join("");
+}
+
+function renderSelectionHelpers() {
+  Object.entries(selectionHelperTargets).forEach(([fieldName, target]) => {
+    if (!target) {
+      return;
+    }
+
+    const field = form.elements.namedItem(fieldName);
+    const selectedValue = String(field?.value || "").trim();
+    const guide = selectionGuide[fieldName]?.[selectedValue];
+
+    if (!guide) {
+      target.innerHTML = "";
+      return;
+    }
+
+    target.innerHTML = `
+      <strong>프롬프트 반영:</strong> ${guide.reflectedAs}<br />
+      <strong>좋은 점:</strong> ${guide.benefit}<br />
+      <strong>추천 상황:</strong> ${guide.whenToUse}
+    `;
+  });
+}
+
+function switchResultView(viewName) {
+  viewTabs.forEach((button) => {
+    const isActive = button.dataset.viewTab === viewName;
+    button.classList.toggle("is-active", isActive);
+    button.setAttribute("aria-selected", String(isActive));
+  });
+
+  viewPanels.forEach((panel) => {
+    panel.classList.toggle("is-hidden", panel.dataset.viewPanel !== viewName);
+  });
+}
+
+function setCodexProgress(percent, title, text) {
+  codexProgressCard.classList.remove("is-hidden");
+  codexProgressFill.style.width = `${percent}%`;
+  codexProgressTitle.textContent = title;
+  codexProgressText.textContent = text;
+}
+
+function startCodexProgress() {
+  const stages = [
+    {
+      limit: 22,
+      title: "Codex가 브리프를 읽고 있습니다.",
+      text: "입력한 장면 정보와 현재 로컬 초안을 빠르게 정리하는 중입니다.",
+    },
+    {
+      limit: 48,
+      title: "모션과 카메라 문법을 다듬는 중입니다.",
+      text: "image-to-video 기준으로 움직임, 포커스, 일관성을 우선 정리하고 있습니다.",
+    },
+    {
+      limit: 72,
+      title: "플랫폼별 문장을 압축하고 있습니다.",
+      text: "Kling / Runway / Veo에 맞게 문장 길이와 톤을 정리하는 단계입니다.",
+    },
+    {
+      limit: 90,
+      title: "최종 문장을 마무리하고 있습니다.",
+      text: "결과 카드에 넣을 요약과 체크 포인트를 묶는 중입니다.",
+    },
+  ];
+
+  let progress = 10;
+  let stageIndex = 0;
+  switchResultView("codex");
+  setCodexProgress(progress, stages[0].title, stages[0].text);
+
+  window.clearInterval(codexProgressTimer);
+  codexProgressTimer = window.setInterval(() => {
+    const currentStage = stages[stageIndex];
+    progress = Math.min(currentStage.limit, progress + (progress < 40 ? 7 : 4));
+    setCodexProgress(progress, currentStage.title, currentStage.text);
+
+    if (progress >= currentStage.limit && stageIndex < stages.length - 1) {
+      stageIndex += 1;
+      const nextStage = stages[stageIndex];
+      setCodexProgress(progress, nextStage.title, nextStage.text);
+    }
+  }, 650);
+}
+
+function finishCodexProgress(success = true) {
+  window.clearInterval(codexProgressTimer);
+  codexProgressTimer = null;
+
+  if (success) {
+    setCodexProgress(
+      100,
+      "Codex 보정이 완료되었습니다.",
+      "결과 카드에 플랫폼별 보정 프롬프트를 반영했습니다."
+    );
+    window.setTimeout(() => {
+      codexProgressCard.classList.add("is-hidden");
+    }, 1200);
+    return;
+  }
+
+  setCodexProgress(
+    100,
+    "Codex 보정 중 문제가 발생했습니다.",
+    "아래 오류 메시지를 확인한 뒤 다시 시도해 주세요."
+  );
 }
 
 function formToObject() {
@@ -237,6 +499,7 @@ async function refineWithCodex() {
   codexRefineButton.disabled = true;
   codexRefineButton.textContent = "Codex 보정 중...";
   refinedSummary.textContent = "빠른 보정 모드로 프롬프트를 정리하고 있습니다.";
+  startCodexProgress();
 
   try {
     saveDraft();
@@ -245,6 +508,8 @@ async function refineWithCodex() {
     renderRefined(response.refined);
     codexStatusText.textContent = "Connected";
     codexStatusDetail.textContent = response.codex.message || "Codex refinement completed.";
+    switchResultView("codex");
+    finishCodexProgress(true);
   } catch (error) {
     refinedSummary.textContent = error.message;
     Object.values(REFINED_FIELDS).forEach((selector) => {
@@ -252,6 +517,7 @@ async function refineWithCodex() {
     });
     renderList(refinedNotes, [], "Codex refinement failed.");
     renderList(refinedHandoff, [], "Retry after checking Codex CLI output.");
+    finishCodexProgress(false);
   } finally {
     codexRefineButton.disabled = false;
     codexRefineButton.textContent = "Codex로 보정";
@@ -292,6 +558,7 @@ function applyPreset(name, { mergeOnly = false, preserveValues = false } = {}) {
 
   presetDescription.textContent = preset.description;
   presetCurrentLabel.textContent = `현재 프리셋: ${preset.label}`;
+  renderSelectionHelpers();
 }
 
 function loadExample() {
@@ -356,6 +623,12 @@ document.addEventListener("click", async (event) => {
   if (presetButton) {
     applyPreset(presetButton.dataset.preset, { mergeOnly: true });
     saveDraft();
+    return;
+  }
+
+  const viewTab = event.target.closest("[data-view-tab]");
+  if (viewTab) {
+    switchResultView(viewTab.dataset.viewTab);
   }
 });
 
@@ -364,7 +637,11 @@ form.addEventListener("submit", async (event) => {
   await buildLocalPrompts();
 });
 
-form.addEventListener("input", saveDraft);
+form.addEventListener("input", () => {
+  saveDraft();
+  renderSelectionHelpers();
+});
+form.addEventListener("change", renderSelectionHelpers);
 loadExampleButton.addEventListener("click", loadExample);
 codexRefineButton.addEventListener("click", refineWithCodex);
 copyBestPracticesButton.addEventListener("click", async () => {
@@ -381,4 +658,6 @@ copyBestPracticesButton.addEventListener("click", async () => {
 restoreDraft();
 resetRefinedSection("Codex refinement is optional. Use it when you want English polishing, tighter commercial phrasing, or better prompt compression.");
 renderPrinciples();
+renderSelectionHelpers();
+switchResultView("local");
 checkCodexStatus();

@@ -173,7 +173,16 @@
                     <span class="tooltip-bubble">화면이 얼마나 가까이 붙는지 정합니다. close-up, medium shot, wide shot 같은 촬영 거리 개념입니다.</span>
                   </span>
                 </span>
-                <input name="shotSize" placeholder="medium close-up" />
+                <select name="shotSize">
+                  <option value="tight close-up">Tight Close-up</option>
+                  <option value="close-up">Close-up</option>
+                  <option value="tight medium close-up">Tight Medium Close-up</option>
+                  <option value="medium close-up" selected>Medium Close-up</option>
+                  <option value="medium shot">Medium Shot</option>
+                  <option value="medium wide shot">Medium Wide Shot</option>
+                  <option value="wide shot">Wide Shot</option>
+                </select>
+                <div class="field-helper" id="shotSize-helper"></div>
               </label>
 
               <label class="field">
@@ -183,7 +192,15 @@
                     <span class="tooltip-bubble">카메라가 피사체를 어떤 높이와 각도에서 보는지 적습니다. eye level, low angle, high angle 등이 여기에 해당합니다.</span>
                   </span>
                 </span>
-                <input name="cameraAngle" placeholder="eye level" />
+                <select name="cameraAngle">
+                  <option value="eye level" selected>Eye Level</option>
+                  <option value="slightly low angle">Slightly Low Angle</option>
+                  <option value="low angle">Low Angle</option>
+                  <option value="slightly high angle">Slightly High Angle</option>
+                  <option value="high angle">High Angle</option>
+                  <option value="overhead/top-down">Overhead / Top-down</option>
+                </select>
+                <div class="field-helper" id="cameraAngle-helper"></div>
               </label>
 
               <label class="field">
@@ -193,7 +210,17 @@
                     <span class="tooltip-bubble">카메라가 어떻게 움직이는지 적습니다. 보통 한 컷에는 하나의 주요 무브만 두는 편이 결과가 안정적입니다.</span>
                   </span>
                 </span>
-                <input name="cameraMovement" placeholder="slow dolly-in" />
+                <select name="cameraMovement">
+                  <option value="locked-off static">Locked-off Static</option>
+                  <option value="quick gentle push-in">Quick Gentle Push-in</option>
+                  <option value="slow dolly-in" selected>Slow Dolly-in</option>
+                  <option value="slow dolly-out">Slow Dolly-out</option>
+                  <option value="slow cinematic push-in">Slow Cinematic Push-in</option>
+                  <option value="slow pan">Slow Pan</option>
+                  <option value="slow tilt up">Slow Tilt Up</option>
+                  <option value="handheld subtle drift">Handheld Subtle Drift</option>
+                </select>
+                <div class="field-helper" id="cameraMovement-helper"></div>
               </label>
             </div>
 
@@ -205,7 +232,14 @@
                     <span class="tooltip-bubble">화각 느낌을 보조적으로 적는 항목입니다. camera movement만큼 중요하진 않지만 사진 언어를 보강할 때 유용합니다.</span>
                   </span>
                 </span>
-                <input name="lens" placeholder="50mm" />
+                <select name="lens">
+                  <option value="24mm">24mm</option>
+                  <option value="35mm">35mm</option>
+                  <option value="50mm" selected>50mm</option>
+                  <option value="85mm">85mm</option>
+                  <option value="100mm macro">100mm Macro</option>
+                </select>
+                <div class="field-helper" id="lens-helper"></div>
               </label>
 
               <label class="field">
@@ -299,105 +333,141 @@
             <p id="strategy-summary">브리프를 입력하면 플랫폼별 초안이 여기에 생성됩니다.</p>
           </div>
 
-          <div class="output-card">
-            <div class="output-header">
-              <h3>Universal</h3>
-              <button class="ghost" data-copy-target="universal-output" type="button">복사</button>
-            </div>
-            <pre id="universal-output" class="prompt-output">Prompt output will appear here.</pre>
-            <p class="note" id="universal-note"></p>
+          <div class="view-switcher" role="tablist" aria-label="결과 보기 전환">
+            <button
+              class="view-chip is-active"
+              id="local-results-tab"
+              data-view-tab="local"
+              role="tab"
+              aria-selected="true"
+              type="button"
+            >
+              로컬 결과
+            </button>
+            <button
+              class="view-chip"
+              id="codex-results-tab"
+              data-view-tab="codex"
+              role="tab"
+              aria-selected="false"
+              type="button"
+            >
+              Codex 보정
+            </button>
           </div>
 
-          <div class="output-card">
-            <div class="output-header">
-              <h3>Kling</h3>
-              <button class="ghost" data-copy-target="kling-output" type="button">복사</button>
+          <section class="result-view" id="local-results-view" data-view-panel="local" role="tabpanel" aria-labelledby="local-results-tab">
+            <div class="output-card">
+              <div class="output-header">
+                <h3>Universal</h3>
+                <button class="ghost" data-copy-target="universal-output" type="button">복사</button>
+              </div>
+              <pre id="universal-output" class="prompt-output">Prompt output will appear here.</pre>
+              <p class="note" id="universal-note"></p>
             </div>
-            <pre id="kling-output" class="prompt-output"></pre>
-            <p class="note" id="kling-note"></p>
-          </div>
 
-          <div class="output-card">
-            <div class="output-header">
-              <h3>Runway</h3>
-              <button class="ghost" data-copy-target="runway-output" type="button">복사</button>
+            <div class="output-card">
+              <div class="output-header">
+                <h3>Kling</h3>
+                <button class="ghost" data-copy-target="kling-output" type="button">복사</button>
+              </div>
+              <pre id="kling-output" class="prompt-output"></pre>
+              <p class="note" id="kling-note"></p>
             </div>
-            <pre id="runway-output" class="prompt-output"></pre>
-            <p class="note" id="runway-note"></p>
-          </div>
 
-          <div class="output-card">
-            <div class="output-header">
-              <h3>Veo</h3>
-              <button class="ghost" data-copy-target="veo-output" type="button">복사</button>
+            <div class="output-card">
+              <div class="output-header">
+                <h3>Runway</h3>
+                <button class="ghost" data-copy-target="runway-output" type="button">복사</button>
+              </div>
+              <pre id="runway-output" class="prompt-output"></pre>
+              <p class="note" id="runway-note"></p>
             </div>
-            <pre id="veo-output" class="prompt-output"></pre>
-            <p class="note" id="veo-note"></p>
-          </div>
 
-          <div class="meta-grid">
-            <div class="meta-card">
-              <h3>Warnings</h3>
-              <ul id="warnings-list" class="meta-list"></ul>
+            <div class="output-card">
+              <div class="output-header">
+                <h3>Veo</h3>
+                <button class="ghost" data-copy-target="veo-output" type="button">복사</button>
+              </div>
+              <pre id="veo-output" class="prompt-output"></pre>
+              <p class="note" id="veo-note"></p>
             </div>
-            <div class="meta-card">
-              <h3>Checklist</h3>
-              <ul id="checklist-list" class="meta-list"></ul>
-            </div>
-          </div>
 
-          <div class="meta-card refined-card">
-            <div class="output-header">
-              <h3>Codex Refined</h3>
-              <button class="ghost" data-copy-target="refined-summary" type="button">요약 복사</button>
+            <div class="meta-grid">
+              <div class="meta-card">
+                <h3>Warnings</h3>
+                <ul id="warnings-list" class="meta-list"></ul>
+              </div>
+              <div class="meta-card">
+                <h3>Checklist</h3>
+                <ul id="checklist-list" class="meta-list"></ul>
+              </div>
             </div>
-            <pre id="refined-summary" class="prompt-output">Codex refinement is optional. Use it when you want English polishing, tighter commercial phrasing, or better prompt compression.</pre>
+          </section>
 
-            <div class="refined-grid">
-              <div class="output-card refined-output-card">
-                <div class="output-header">
-                  <h3>Refined Universal</h3>
-                  <button class="ghost" data-copy-target="refined-universal-output" type="button">복사</button>
+          <section class="result-view is-hidden" id="codex-results-view" data-view-panel="codex" role="tabpanel" aria-labelledby="codex-results-tab">
+            <div class="meta-card refined-card">
+              <div class="output-header">
+                <h3>Codex Refined</h3>
+                <button class="ghost" data-copy-target="refined-summary" type="button">요약 복사</button>
+              </div>
+              <div class="progress-card is-hidden" id="codex-progress-card" aria-live="polite">
+                <div class="progress-copy">
+                  <strong id="codex-progress-title">Codex가 프롬프트를 보정하고 있습니다.</strong>
+                  <span id="codex-progress-text">브리프를 읽고 빠른 보정 모드로 문장을 정리하는 중입니다.</span>
                 </div>
-                <pre id="refined-universal-output" class="prompt-output refined-output">No Codex refinement yet.</pre>
+                <div class="progress-track" aria-hidden="true">
+                  <div class="progress-fill" id="codex-progress-fill"></div>
+                </div>
+              </div>
+              <pre id="refined-summary" class="prompt-output">Codex refinement is optional. Use it when you want English polishing, tighter commercial phrasing, or better prompt compression.</pre>
+
+              <div class="refined-grid">
+                <div class="output-card refined-output-card">
+                  <div class="output-header">
+                    <h3>Refined Universal</h3>
+                    <button class="ghost" data-copy-target="refined-universal-output" type="button">복사</button>
+                  </div>
+                  <pre id="refined-universal-output" class="prompt-output refined-output">No Codex refinement yet.</pre>
+                </div>
+
+                <div class="output-card refined-output-card">
+                  <div class="output-header">
+                    <h3>Refined Kling</h3>
+                    <button class="ghost" data-copy-target="refined-kling-output" type="button">복사</button>
+                  </div>
+                  <pre id="refined-kling-output" class="prompt-output refined-output">No Codex refinement yet.</pre>
+                </div>
+
+                <div class="output-card refined-output-card">
+                  <div class="output-header">
+                    <h3>Refined Runway</h3>
+                    <button class="ghost" data-copy-target="refined-runway-output" type="button">복사</button>
+                  </div>
+                  <pre id="refined-runway-output" class="prompt-output refined-output">No Codex refinement yet.</pre>
+                </div>
+
+                <div class="output-card refined-output-card">
+                  <div class="output-header">
+                    <h3>Refined Veo</h3>
+                    <button class="ghost" data-copy-target="refined-veo-output" type="button">복사</button>
+                  </div>
+                  <pre id="refined-veo-output" class="prompt-output refined-output">No Codex refinement yet.</pre>
+                </div>
               </div>
 
-              <div class="output-card refined-output-card">
-                <div class="output-header">
-                  <h3>Refined Kling</h3>
-                  <button class="ghost" data-copy-target="refined-kling-output" type="button">복사</button>
+              <div class="meta-grid refined-meta-grid">
+                <div class="meta-card refined-meta-card">
+                  <h3>Refinement Notes</h3>
+                  <ul id="refined-notes" class="meta-list"></ul>
                 </div>
-                <pre id="refined-kling-output" class="prompt-output refined-output">No Codex refinement yet.</pre>
-              </div>
-
-              <div class="output-card refined-output-card">
-                <div class="output-header">
-                  <h3>Refined Runway</h3>
-                  <button class="ghost" data-copy-target="refined-runway-output" type="button">복사</button>
+                <div class="meta-card refined-meta-card">
+                  <h3>Handoff Checklist</h3>
+                  <ul id="refined-handoff" class="meta-list"></ul>
                 </div>
-                <pre id="refined-runway-output" class="prompt-output refined-output">No Codex refinement yet.</pre>
-              </div>
-
-              <div class="output-card refined-output-card">
-                <div class="output-header">
-                  <h3>Refined Veo</h3>
-                  <button class="ghost" data-copy-target="refined-veo-output" type="button">복사</button>
-                </div>
-                <pre id="refined-veo-output" class="prompt-output refined-output">No Codex refinement yet.</pre>
               </div>
             </div>
-
-            <div class="meta-grid refined-meta-grid">
-              <div class="meta-card refined-meta-card">
-                <h3>Refinement Notes</h3>
-                <ul id="refined-notes" class="meta-list"></ul>
-              </div>
-              <div class="meta-card refined-meta-card">
-                <h3>Handoff Checklist</h3>
-                <ul id="refined-handoff" class="meta-list"></ul>
-              </div>
-            </div>
-          </div>
+          </section>
         </section>
       </main>
 
