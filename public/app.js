@@ -626,6 +626,7 @@ function loadExample() {
     negativePrompt: "rubbery motion, oversmiling, unstable fingers",
     durationSeconds: "5",
     referenceImagePath: "",
+    bgmRestricted: false,
     dialogueEnabled: false,
     dialogueLanguage: "korean",
     dialogueVoice: "dry AI voice, restrained delivery",
