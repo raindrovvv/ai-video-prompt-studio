@@ -1,0 +1,9 @@
+{
+  "name": "ai-video-prompt-studio",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Local AI video prompt builder with optional Codex CLI refinement",
+  "scripts": {
+    "start": "node server.js"
+  }
+}

@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AI Video Prompt Studio</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">LOCAL WORKFLOW FOR KLING / RUNWAY / VEO</p>
+          <h1>AI Video Prompt Studio</h1>
+          <p class="hero-text">
+            이미지 기반 영상이면 모션과 카메라를 먼저, 텍스트 기반 영상이면 장면과 룩까지 넓게.
+            로컬 규칙으로 빠르게 초안을 만들고, 필요할 때만 Codex 구독으로 다듬도록 설계했습니다.
+          </p>
+          <div class="hero-actions">
+            <button class="secondary" id="load-example-button" type="button">예시 불러오기</button>
+            <button class="secondary" id="copy-best-practices-button" type="button">핵심 원칙 복사</button>
+          </div>
+        </div>
+        <aside class="status-card">
+          <p class="status-label">Codex Status</p>
+          <p class="status-value" id="codex-status-text">확인 중...</p>
+          <p class="status-detail" id="codex-status-detail">
+            로컬 앱에서 Codex CLI를 호출해 API 없이 보정할 수 있는지 확인합니다.
+          </p>
+        </aside>
+      </header>
+
+      <main class="workspace-grid">
+        <section class="panel form-panel">
+          <div class="section-heading">
+            <h2>브리프 입력</h2>
+            <p>기본은 image-to-video 중심입니다. 영어 출력이 필요하면 Codex 보정을 권장합니다.</p>
+          </div>
+
+          <form id="brief-form">
+            <div class="field-grid two-up">
+              <label class="field">
+                <span>생성 모드</span>
+                <select name="generationMode">
+                  <option value="image-to-video" selected>Image to Video</option>
+                  <option value="text-to-video">Text to Video</option>
+                </select>
+              </label>
+
+              <label class="field">
+                <span>출력 언어</span>
+                <select name="outputLanguage">
+                  <option value="english" selected>English (Recommended)</option>
+                  <option value="korean">Korean</option>
+                </select>
+              </label>
+            </div>
+
+            <div class="preset-block">
+              <div class="preset-heading">
+                <div>
+                  <span class="preset-label">프리셋</span>
+                  <p class="preset-copy">톤과 샷 문법을 먼저 고르고, 내용은 아래 브리프로 채워 넣는 방식입니다.</p>
+                </div>
+                <input type="hidden" name="presetName" value="ad" />
+                <p class="preset-current" id="preset-current-label">현재 프리셋: 광고형</p>
+              </div>
+              <div class="preset-row" id="preset-row">
+                <button class="preset-chip is-active" data-preset="ad" type="button">광고형</button>
+                <button class="preset-chip" data-preset="cinematic" type="button">시네마틱</button>
+                <button class="preset-chip" data-preset="shortform" type="button">SNS 숏폼</button>
+              </div>
+              <p class="preset-description" id="preset-description">
+                제품/푸드/브랜드 컷에 맞게 디테일 강조와 절제된 모션, 클린한 상업 톤을 우선합니다.
+              </p>
+            </div>
+
+            <label class="field">
+              <span>소스 자료 메모</span>
+              <textarea
+                name="sourceMaterial"
+                rows="5"
+                placeholder="공식 가이드 요약, 광고 콘셉트, 레퍼런스 분석 같은 기반 자료를 붙여 넣으세요. Codex 보정 시 적극 활용됩니다."
+              ></textarea>
+            </label>
+
+            <div class="field-grid two-up">
+              <label class="field">
+                <span>Subject</span>
+                <input name="subject" placeholder="young Korean woman holding fried chicken" />
+              </label>
+
+              <label class="field">
+                <span>Current Visual State</span>
+                <input name="currentVisualState" placeholder="medium close-up, cozy one-room apartment at night" />
+              </label>
+            </div>
+
+            <div class="field-grid two-up">
+              <label class="field">
+                <span>Primary Motion</span>
+                <input name="primaryMotion" placeholder="She slightly raises the chicken and pauses with anticipation" />
+              </label>
+
+              <label class="field">
+                <span>Secondary Motion / Environment</span>
+                <input name="secondaryMotion" placeholder="A soft phone glow shifts across her face" />
+              </label>
+            </div>
+
+            <div class="field-grid two-up">
+              <label class="field">
+                <span>Location</span>
+                <input name="location" placeholder="cozy one-room apartment at night" />
+              </label>
+
+              <label class="field">
+                <span>Lighting</span>
+                <input name="lighting" placeholder="warm tungsten practical light mixed with soft phone glow" />
+              </label>
+            </div>
+
+            <div class="field-grid three-up">
+              <label class="field">
+                <span>Shot Size</span>
+                <input name="shotSize" placeholder="medium close-up" />
+              </label>
+
+              <label class="field">
+                <span>Camera Angle</span>
+                <input name="cameraAngle" placeholder="eye level" />
+              </label>
+
+              <label class="field">
+                <span>Camera Movement</span>
+                <input name="cameraMovement" placeholder="slow dolly-in" />
+              </label>
+            </div>
+
+            <div class="field-grid three-up">
+              <label class="field">
+                <span>Lens</span>
+                <input name="lens" placeholder="50mm" />
+              </label>
+
+              <label class="field">
+                <span>Pacing</span>
+                <input name="pace" placeholder="gentle and appetizing" />
+              </label>
+
+              <label class="field">
+                <span>Duration (sec)</span>
+                <input name="durationSeconds" type="number" min="3" max="12" value="5" />
+              </label>
+            </div>
+
+            <div class="field-grid two-up">
+              <label class="field">
+                <span>Look / Style</span>
+                <input name="look" placeholder="premium Korean food commercial, realistic cinematic texture" />
+              </label>
+
+              <label class="field">
+                <span>Focus Points</span>
+                <input name="focusPoints" placeholder="crispy texture, subtle hand movement, natural facial acting" />
+              </label>
+            </div>
+
+            <div class="field-grid two-up">
+              <label class="field">
+                <span>Consistency Guardrail</span>
+                <input name="consistency" placeholder="motion stays natural and restrained, identity stays consistent" />
+              </label>
+
+              <label class="field">
+                <span>Negative Prompt / Avoid</span>
+                <input name="negativePrompt" placeholder="rubbery motion, exaggerated expression, unstable hands" />
+              </label>
+            </div>
+
+            <label class="field">
+              <span>Reference Image Path (Optional)</span>
+              <input
+                name="referenceImagePath"
+                placeholder="C:\\Users\\CHA\\Desktop\\example.png"
+              />
+            </label>
+
+            <div class="button-row">
+              <button class="primary" type="submit">로컬 초안 생성</button>
+              <button class="secondary" id="codex-refine-button" type="button">Codex로 보정</button>
+            </div>
+          </form>
+        </section>
+
+        <section class="panel output-panel">
+          <div class="section-heading">
+            <h2>결과</h2>
+            <p id="strategy-summary">브리프를 입력하면 플랫폼별 초안이 여기에 생성됩니다.</p>
+          </div>
+
+          <div class="output-card">
+            <div class="output-header">
+              <h3>Universal</h3>
+              <button class="ghost" data-copy-target="universal-output" type="button">복사</button>
+            </div>
+            <pre id="universal-output" class="prompt-output">Prompt output will appear here.</pre>
+            <p class="note" id="universal-note"></p>
+          </div>
+
+          <div class="output-card">
+            <div class="output-header">
+              <h3>Kling</h3>
+              <button class="ghost" data-copy-target="kling-output" type="button">복사</button>
+            </div>
+            <pre id="kling-output" class="prompt-output"></pre>
+            <p class="note" id="kling-note"></p>
+          </div>
+
+          <div class="output-card">
+            <div class="output-header">
+              <h3>Runway</h3>
+              <button class="ghost" data-copy-target="runway-output" type="button">복사</button>
+            </div>
+            <pre id="runway-output" class="prompt-output"></pre>
+            <p class="note" id="runway-note"></p>
+          </div>
+
+          <div class="output-card">
+            <div class="output-header">
+              <h3>Veo</h3>
+              <button class="ghost" data-copy-target="veo-output" type="button">복사</button>
+            </div>
+            <pre id="veo-output" class="prompt-output"></pre>
+            <p class="note" id="veo-note"></p>
+          </div>
+
+          <div class="meta-grid">
+            <div class="meta-card">
+              <h3>Warnings</h3>
+              <ul id="warnings-list" class="meta-list"></ul>
+            </div>
+            <div class="meta-card">
+              <h3>Checklist</h3>
+              <ul id="checklist-list" class="meta-list"></ul>
+            </div>
+          </div>
+
+          <div class="meta-card refined-card">
+            <div class="output-header">
+              <h3>Codex Refined</h3>
+              <button class="ghost" data-copy-target="refined-summary" type="button">요약 복사</button>
+            </div>
+            <pre id="refined-summary" class="prompt-output">Codex refinement is optional. Use it when you want English polishing, tighter commercial phrasing, or better prompt compression.</pre>
+
+            <div class="refined-grid">
+              <div class="output-card refined-output-card">
+                <div class="output-header">
+                  <h3>Refined Universal</h3>
+                  <button class="ghost" data-copy-target="refined-universal-output" type="button">복사</button>
+                </div>
+                <pre id="refined-universal-output" class="prompt-output refined-output">No Codex refinement yet.</pre>
+              </div>
+
+              <div class="output-card refined-output-card">
+                <div class="output-header">
+                  <h3>Refined Kling</h3>
+                  <button class="ghost" data-copy-target="refined-kling-output" type="button">복사</button>
+                </div>
+                <pre id="refined-kling-output" class="prompt-output refined-output">No Codex refinement yet.</pre>
+              </div>
+
+              <div class="output-card refined-output-card">
+                <div class="output-header">
+                  <h3>Refined Runway</h3>
+                  <button class="ghost" data-copy-target="refined-runway-output" type="button">복사</button>
+                </div>
+                <pre id="refined-runway-output" class="prompt-output refined-output">No Codex refinement yet.</pre>
+              </div>
+
+              <div class="output-card refined-output-card">
+                <div class="output-header">
+                  <h3>Refined Veo</h3>
+                  <button class="ghost" data-copy-target="refined-veo-output" type="button">복사</button>
+                </div>
+                <pre id="refined-veo-output" class="prompt-output refined-output">No Codex refinement yet.</pre>
+              </div>
+            </div>
+
+            <div class="meta-grid refined-meta-grid">
+              <div class="meta-card refined-meta-card">
+                <h3>Refinement Notes</h3>
+                <ul id="refined-notes" class="meta-list"></ul>
+              </div>
+              <div class="meta-card refined-meta-card">
+                <h3>Handoff Checklist</h3>
+                <ul id="refined-handoff" class="meta-list"></ul>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <section class="panel principles-panel">
+        <div class="section-heading">
+          <h2>핵심 원칙</h2>
+          <p>아래 규칙은 제공해주신 가이드 요약을 프로그램 UX로 옮긴 것입니다.</p>
+        </div>
+        <div class="principles-grid" id="principles-grid"></div>
+      </section>
+    </div>
+
+    <script src="/app.js"></script>
+  </body>
+</html>

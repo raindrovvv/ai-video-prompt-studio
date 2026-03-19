@@ -1,0 +1,8 @@
+Codex 터미널 등에서
+
+cd D:\Project\ai-video-prompt-studio
+.\start.ps1
+
+입력 후 
+http://localhost:3020
+OPEN!
