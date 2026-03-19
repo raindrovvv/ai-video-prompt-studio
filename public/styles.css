@@ -276,6 +276,87 @@ button:hover {
   font-size: 0.92rem;
 }
 
+.field > .field-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  vertical-align: middle;
+}
+
+.tooltip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  outline: none;
+  flex: 0 0 auto;
+}
+
+.tooltip-trigger {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: rgba(240, 185, 103, 0.18);
+  border: 1px solid rgba(240, 185, 103, 0.3);
+  color: transparent;
+  font-size: 0;
+  font-weight: 700;
+  line-height: 0;
+  cursor: help;
+}
+
+.tooltip-trigger::before {
+  content: "!";
+  display: block;
+  color: var(--accent);
+  font-size: 0.72rem;
+  line-height: 1;
+  transform: translateY(-0.5px);
+}
+
+.tooltip-bubble {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 10px);
+  transform: translateX(-50%) translateY(8px);
+  width: min(280px, 60vw);
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: #f4efe8;
+  color: #1a2430;
+  border: 1px solid rgba(24, 33, 43, 0.08);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+  font-size: 0.86rem;
+  line-height: 1.55;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 160ms ease,
+    transform 160ms ease;
+  z-index: 20;
+}
+
+.tooltip-bubble::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  transform: translateX(-50%);
+  border-width: 7px 7px 0;
+  border-style: solid;
+  border-color: #f4efe8 transparent transparent;
+}
+
+.tooltip:hover .tooltip-bubble,
+.tooltip:focus .tooltip-bubble,
+.tooltip:focus-within .tooltip-bubble {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
 input,
 textarea,
 select {
@@ -443,6 +524,23 @@ select option {
 
   .preset-heading {
     flex-direction: column;
+  }
+
+  .tooltip-bubble {
+    left: 0;
+    transform: translateX(0) translateY(8px);
+    width: min(260px, 78vw);
+  }
+
+  .tooltip-bubble::after {
+    left: 18px;
+    transform: none;
+  }
+
+  .tooltip:hover .tooltip-bubble,
+  .tooltip:focus .tooltip-bubble,
+  .tooltip:focus-within .tooltip-bubble {
+    transform: translateX(0) translateY(0);
   }
 
   h1 {

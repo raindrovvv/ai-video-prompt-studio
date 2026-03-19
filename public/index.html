@@ -40,7 +40,12 @@
           <form id="brief-form">
             <div class="field-grid two-up">
               <label class="field">
-                <span>생성 모드</span>
+                <span class="field-label">생성 모드
+                  <span class="tooltip" tabindex="0" aria-label="생성 모드 도움말">
+                    <span class="tooltip-trigger" aria-hidden="true"></span>
+                    <span class="tooltip-bubble">정지 이미지를 움직일지, 처음부터 장면 전체를 생성할지 정합니다. 보통 사진 기반이면 Image to Video가 더 맞습니다.</span>
+                  </span>
+                </span>
                 <select name="generationMode">
                   <option value="image-to-video" selected>Image to Video</option>
                   <option value="text-to-video">Text to Video</option>
@@ -48,7 +53,12 @@
               </label>
 
               <label class="field">
-                <span>출력 언어</span>
+                <span class="field-label">출력 언어
+                  <span class="tooltip" tabindex="0" aria-label="출력 언어 도움말">
+                    <span class="tooltip-trigger" aria-hidden="true"></span>
+                    <span class="tooltip-bubble">최종 프롬프트 문장을 어떤 언어로 쓸지 정합니다. 대부분 AI 영상 툴은 영어 프롬프트가 더 안정적입니다.</span>
+                  </span>
+                </span>
                 <select name="outputLanguage">
                   <option value="english" selected>English (Recommended)</option>
                   <option value="korean">Korean</option>
@@ -76,7 +86,12 @@
             </div>
 
             <label class="field">
-              <span>소스 자료 메모</span>
+              <span class="field-label">소스 자료 메모
+                <span class="tooltip" tabindex="0" aria-label="소스 자료 메모 도움말">
+                  <span class="tooltip-trigger" aria-hidden="true"></span>
+                  <span class="tooltip-bubble">가이드 요약, 광고 콘셉트, 참고 규칙처럼 전체 문장 톤에 영향을 줄 메모를 적는 곳입니다. Codex 보정 시 우선 참고합니다.</span>
+                </span>
+              </span>
               <textarea
                 name="sourceMaterial"
                 rows="5"
@@ -86,100 +101,185 @@
 
             <div class="field-grid two-up">
               <label class="field">
-                <span>Subject</span>
+                <span class="field-label">Subject
+                  <span class="tooltip" tabindex="0" aria-label="Subject 도움말">
+                    <span class="tooltip-trigger" aria-hidden="true"></span>
+                    <span class="tooltip-bubble">주인공이나 핵심 피사체를 적습니다. 가장 중요한 항목 중 하나라서 짧아도 명확하게 쓰는 편이 좋습니다.</span>
+                  </span>
+                </span>
                 <input name="subject" placeholder="young Korean woman holding fried chicken" />
               </label>
 
               <label class="field">
-                <span>Current Visual State</span>
+                <span class="field-label">Current Visual State
+                  <span class="tooltip" tabindex="0" aria-label="Current Visual State 도움말">
+                    <span class="tooltip-trigger" aria-hidden="true"></span>
+                    <span class="tooltip-bubble">현재 보이는 상태를 적습니다. 의상, 표정, 프레이밍, 자세처럼 이미 화면에 잡힌 조건을 설명하면 좋습니다.</span>
+                  </span>
+                </span>
                 <input name="currentVisualState" placeholder="medium close-up, cozy one-room apartment at night" />
               </label>
             </div>
 
             <div class="field-grid two-up">
               <label class="field">
-                <span>Primary Motion</span>
+                <span class="field-label">Primary Motion
+                  <span class="tooltip" tabindex="0" aria-label="Primary Motion 도움말">
+                    <span class="tooltip-trigger" aria-hidden="true"></span>
+                    <span class="tooltip-bubble">가장 먼저 보여줘야 할 핵심 행동입니다. 이미지 기반 영상에서는 이 항목의 우선순위가 특히 높습니다.</span>
+                  </span>
+                </span>
                 <input name="primaryMotion" placeholder="She slightly raises the chicken and pauses with anticipation" />
               </label>
 
               <label class="field">
-                <span>Secondary Motion / Environment</span>
+                <span class="field-label">Secondary Motion / Environment
+                  <span class="tooltip" tabindex="0" aria-label="Secondary Motion 도움말">
+                    <span class="tooltip-trigger" aria-hidden="true"></span>
+                    <span class="tooltip-bubble">보조적인 움직임이나 환경 변화를 적습니다. 예를 들어 머리카락, 증기, 빛 변화처럼 메인 액션을 돋보이게 하는 요소입니다.</span>
+                  </span>
+                </span>
                 <input name="secondaryMotion" placeholder="A soft phone glow shifts across her face" />
               </label>
             </div>
 
             <div class="field-grid two-up">
               <label class="field">
-                <span>Location</span>
+                <span class="field-label">Location
+                  <span class="tooltip" tabindex="0" aria-label="Location 도움말">
+                    <span class="tooltip-trigger" aria-hidden="true"></span>
+                    <span class="tooltip-bubble">장소나 배경 설명입니다. 다만 image-to-video에서는 이미 배경이 정해져 있으면 길게 쓸 필요가 적습니다.</span>
+                  </span>
+                </span>
                 <input name="location" placeholder="cozy one-room apartment at night" />
               </label>
 
               <label class="field">
-                <span>Lighting</span>
+                <span class="field-label">Lighting
+                  <span class="tooltip" tabindex="0" aria-label="Lighting 도움말">
+                    <span class="tooltip-trigger" aria-hidden="true"></span>
+                    <span class="tooltip-bubble">조명 분위기나 광원 특성을 적습니다. image-to-video에서는 보강용, text-to-video에서는 장면 톤을 잡는 핵심 정보가 됩니다.</span>
+                  </span>
+                </span>
                 <input name="lighting" placeholder="warm tungsten practical light mixed with soft phone glow" />
               </label>
             </div>
 
             <div class="field-grid three-up">
               <label class="field">
-                <span>Shot Size</span>
+                <span class="field-label">Shot Size
+                  <span class="tooltip" tabindex="0" aria-label="Shot Size 도움말">
+                    <span class="tooltip-trigger" aria-hidden="true"></span>
+                    <span class="tooltip-bubble">화면이 얼마나 가까이 붙는지 정합니다. close-up, medium shot, wide shot 같은 촬영 거리 개념입니다.</span>
+                  </span>
+                </span>
                 <input name="shotSize" placeholder="medium close-up" />
               </label>
 
               <label class="field">
-                <span>Camera Angle</span>
+                <span class="field-label">Camera Angle
+                  <span class="tooltip" tabindex="0" aria-label="Camera Angle 도움말">
+                    <span class="tooltip-trigger" aria-hidden="true"></span>
+                    <span class="tooltip-bubble">카메라가 피사체를 어떤 높이와 각도에서 보는지 적습니다. eye level, low angle, high angle 등이 여기에 해당합니다.</span>
+                  </span>
+                </span>
                 <input name="cameraAngle" placeholder="eye level" />
               </label>
 
               <label class="field">
-                <span>Camera Movement</span>
+                <span class="field-label">Camera Movement
+                  <span class="tooltip" tabindex="0" aria-label="Camera Movement 도움말">
+                    <span class="tooltip-trigger" aria-hidden="true"></span>
+                    <span class="tooltip-bubble">카메라가 어떻게 움직이는지 적습니다. 보통 한 컷에는 하나의 주요 무브만 두는 편이 결과가 안정적입니다.</span>
+                  </span>
+                </span>
                 <input name="cameraMovement" placeholder="slow dolly-in" />
               </label>
             </div>
 
             <div class="field-grid three-up">
               <label class="field">
-                <span>Lens</span>
+                <span class="field-label">Lens
+                  <span class="tooltip" tabindex="0" aria-label="Lens 도움말">
+                    <span class="tooltip-trigger" aria-hidden="true"></span>
+                    <span class="tooltip-bubble">화각 느낌을 보조적으로 적는 항목입니다. camera movement만큼 중요하진 않지만 사진 언어를 보강할 때 유용합니다.</span>
+                  </span>
+                </span>
                 <input name="lens" placeholder="50mm" />
               </label>
 
               <label class="field">
-                <span>Pacing</span>
+                <span class="field-label">Pacing
+                  <span class="tooltip" tabindex="0" aria-label="Pacing 도움말">
+                    <span class="tooltip-trigger" aria-hidden="true"></span>
+                    <span class="tooltip-bubble">영상의 템포와 리듬입니다. 느린지, 차분한지, 강하게 치고 나가는지 같은 전개 속도감을 적습니다.</span>
+                  </span>
+                </span>
                 <input name="pace" placeholder="gentle and appetizing" />
               </label>
 
               <label class="field">
-                <span>Duration (sec)</span>
+                <span class="field-label">Duration (sec)
+                  <span class="tooltip" tabindex="0" aria-label="Duration 도움말">
+                    <span class="tooltip-trigger" aria-hidden="true"></span>
+                    <span class="tooltip-bubble">원하는 영상 길이입니다. 실제 생성 툴에서는 프롬프트보다 UI 파라미터에서 설정하는 편이 더 정확합니다.</span>
+                  </span>
+                </span>
                 <input name="durationSeconds" type="number" min="3" max="12" value="5" />
               </label>
             </div>
 
             <div class="field-grid two-up">
               <label class="field">
-                <span>Look / Style</span>
+                <span class="field-label">Look / Style
+                  <span class="tooltip" tabindex="0" aria-label="Look 도움말">
+                    <span class="tooltip-trigger" aria-hidden="true"></span>
+                    <span class="tooltip-bubble">광고형, 시네마틱, 리얼리스틱 같은 전체 결과 톤을 정하는 항목입니다. 색감과 질감 방향을 보강할 때 좋습니다.</span>
+                  </span>
+                </span>
                 <input name="look" placeholder="premium Korean food commercial, realistic cinematic texture" />
               </label>
 
               <label class="field">
-                <span>Focus Points</span>
+                <span class="field-label">Focus Points
+                  <span class="tooltip" tabindex="0" aria-label="Focus Points 도움말">
+                    <span class="tooltip-trigger" aria-hidden="true"></span>
+                    <span class="tooltip-bubble">반드시 잘 보여야 할 핵심 포인트입니다. 보통 1~3개 정도로 압축하는 편이 결과가 안정적입니다.</span>
+                  </span>
+                </span>
                 <input name="focusPoints" placeholder="crispy texture, subtle hand movement, natural facial acting" />
               </label>
             </div>
 
             <div class="field-grid two-up">
               <label class="field">
-                <span>Consistency Guardrail</span>
+                <span class="field-label">Consistency Guardrail
+                  <span class="tooltip" tabindex="0" aria-label="Consistency Guardrail 도움말">
+                    <span class="tooltip-trigger" aria-hidden="true"></span>
+                    <span class="tooltip-bubble">얼굴, 손, 동작, 프레이밍이 흔들리지 않도록 붙이는 안정화 조건입니다. image-to-video에서 특히 중요합니다.</span>
+                  </span>
+                </span>
                 <input name="consistency" placeholder="motion stays natural and restrained, identity stays consistent" />
               </label>
 
               <label class="field">
-                <span>Negative Prompt / Avoid</span>
+                <span class="field-label">Negative Prompt / Avoid
+                  <span class="tooltip" tabindex="0" aria-label="Negative Prompt 도움말">
+                    <span class="tooltip-trigger" aria-hidden="true"></span>
+                    <span class="tooltip-bubble">피하고 싶은 오류나 톤을 적습니다. 손 왜곡, 과한 표정, 고무 같은 움직임처럼 자주 나오는 문제를 방지할 때 유용합니다.</span>
+                  </span>
+                </span>
                 <input name="negativePrompt" placeholder="rubbery motion, exaggerated expression, unstable hands" />
               </label>
             </div>
 
             <label class="field">
-              <span>Reference Image Path (Optional)</span>
+              <span class="field-label">Reference Image Path (Optional)
+                <span class="tooltip" tabindex="0" aria-label="Reference Image Path 도움말">
+                  <span class="tooltip-trigger" aria-hidden="true"></span>
+                  <span class="tooltip-bubble">로컬 이미지 경로입니다. 실제 파일이 있으면 Codex 보정 시 이미지 기반 브리프로 더 정확하게 판단하는 데 도움이 됩니다.</span>
+                </span>
+              </span>
               <input
                 name="referenceImagePath"
                 placeholder="C:\\Users\\CHA\\Desktop\\example.png"
