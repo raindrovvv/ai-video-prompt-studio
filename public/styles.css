@@ -178,6 +178,19 @@ button:hover {
   gap: 20px;
 }
 
+.form-panel,
+.output-panel {
+  position: relative;
+}
+
+.form-panel {
+  z-index: 2;
+}
+
+.output-panel {
+  z-index: 1;
+}
+
 .panel {
   padding: 24px;
 }
@@ -205,8 +218,15 @@ button:hover {
 }
 
 .field {
+  position: relative;
+  z-index: 0;
   display: block;
   margin-bottom: 14px;
+}
+
+.field:hover,
+.field:focus-within {
+  z-index: 40;
 }
 
 .preset-block {
@@ -291,6 +311,7 @@ button:hover {
   justify-content: center;
   outline: none;
   flex: 0 0 auto;
+  z-index: 60;
 }
 
 .tooltip-trigger {
@@ -336,7 +357,7 @@ button:hover {
   transition:
     opacity 160ms ease,
     transform 160ms ease;
-  z-index: 20;
+  z-index: 9999;
 }
 
 .tooltip-bubble::after {
