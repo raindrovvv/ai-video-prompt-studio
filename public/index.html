@@ -99,6 +99,64 @@
               ></textarea>
             </label>
 
+            <div class="dialogue-toggle-row">
+              <label class="toggle-pill" for="dialogueEnabled">
+                <input id="dialogueEnabled" name="dialogueEnabled" type="checkbox" />
+                <span class="toggle-track"></span>
+                <span class="toggle-copy">
+                  <strong>대사 추가</strong>
+                  <small>필요할 때만 켜고, Veo / Runway / Kling 방식 차이를 자동 반영합니다.</small>
+                </span>
+              </label>
+            </div>
+
+            <div class="dialogue-panel is-hidden" id="dialogue-panel">
+              <div class="field-grid two-up">
+                <label class="field">
+                  <span class="field-label">Dialogue Language
+                    <span class="tooltip" tabindex="0" aria-label="Dialogue Language 도움말">
+                      <span class="tooltip-trigger" aria-hidden="true"></span>
+                      <span class="tooltip-bubble">실제 대사가 어떤 언어로 들려야 하는지 적습니다. 프롬프트 언어와 달라도 됩니다.</span>
+                    </span>
+                  </span>
+                  <select name="dialogueLanguage">
+                    <option value="korean" selected>Korean</option>
+                    <option value="english">English</option>
+                    <option value="mixed">Mixed</option>
+                  </select>
+                </label>
+
+                <label class="field">
+                  <span class="field-label">Voice / Delivery
+                    <span class="tooltip" tabindex="0" aria-label="Voice Delivery 도움말">
+                      <span class="tooltip-trigger" aria-hidden="true"></span>
+                      <span class="tooltip-bubble">대사의 말투, 톤, 연기 온도를 적습니다. 예: dry AI voice, teasing tone, calm narrator.</span>
+                    </span>
+                  </span>
+                  <input name="dialogueVoice" placeholder="dry AI voice, teasing tone, restrained delivery" />
+                </label>
+              </div>
+
+              <label class="field">
+                <span class="field-label">Dialogue Script
+                  <span class="tooltip" tabindex="0" aria-label="Dialogue Script 도움말">
+                    <span class="tooltip-trigger" aria-hidden="true"></span>
+                    <span class="tooltip-bubble">화자 구분이 필요하면 `ARIA:`처럼 적어 주세요. Veo와 Kling은 직접 반영하고, Runway는 Lip Sync용 스크립트로 넘기는 쪽이 더 안전합니다.</span>
+                  </span>
+                </span>
+                <textarea
+                  name="dialogueScript"
+                  rows="6"
+                  placeholder="ARIA: 잠깐… 후참잘만 47번?&#10;Friend: 이건 중독이야, 취향이야?"
+                ></textarea>
+              </label>
+
+              <p class="dialogue-hint">
+                Veo는 대사 프롬프트 직접 반영에 강한 편이고, Runway는 Lip Sync handoff가 더 안정적입니다.
+                Kling Video 3 Omni는 native audio 방향으로 반영합니다.
+              </p>
+            </div>
+
             <div class="field-grid two-up">
               <label class="field">
                 <span class="field-label">Subject
@@ -401,6 +459,32 @@
               <div class="meta-card">
                 <h3>Checklist</h3>
                 <ul id="checklist-list" class="meta-list"></ul>
+              </div>
+            </div>
+
+            <div class="dialogue-results is-hidden" id="dialogue-results">
+              <div class="meta-card">
+                <h3>Dialogue Script Preview</h3>
+                <pre id="dialogue-script-preview" class="prompt-output dialogue-output">대사 토글을 켜면 여기에 스크립트가 표시됩니다.</pre>
+              </div>
+
+              <div class="meta-grid dialogue-meta-grid">
+                <div class="meta-card">
+                  <h3>Veo Dialogue Handling</h3>
+                  <p class="note" id="veo-dialogue-note"></p>
+                </div>
+                <div class="meta-card">
+                  <h3>Runway Dialogue Handling</h3>
+                  <p class="note" id="runway-dialogue-note"></p>
+                </div>
+                <div class="meta-card">
+                  <h3>Kling Dialogue Handling</h3>
+                  <p class="note" id="kling-dialogue-note"></p>
+                </div>
+                <div class="meta-card">
+                  <h3>Best Practice</h3>
+                  <p class="note" id="dialogue-best-practice-note"></p>
+                </div>
               </div>
             </div>
           </section>

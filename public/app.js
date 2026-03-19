@@ -20,6 +20,13 @@ const codexProgressCard = document.querySelector("#codex-progress-card");
 const codexProgressTitle = document.querySelector("#codex-progress-title");
 const codexProgressText = document.querySelector("#codex-progress-text");
 const codexProgressFill = document.querySelector("#codex-progress-fill");
+const dialoguePanel = document.querySelector("#dialogue-panel");
+const dialogueResults = document.querySelector("#dialogue-results");
+const dialogueScriptPreview = document.querySelector("#dialogue-script-preview");
+const veoDialogueNote = document.querySelector("#veo-dialogue-note");
+const runwayDialogueNote = document.querySelector("#runway-dialogue-note");
+const klingDialogueNote = document.querySelector("#kling-dialogue-note");
+const dialogueBestPracticeNote = document.querySelector("#dialogue-best-practice-note");
 const selectionHelperTargets = {
   shotSize: document.querySelector("#shotSize-helper"),
   cameraAngle: document.querySelector("#cameraAngle-helper"),
@@ -295,6 +302,32 @@ function renderSelectionHelpers() {
   });
 }
 
+function updateDialogueVisibility() {
+  const enabled = Boolean(form.elements.namedItem("dialogueEnabled")?.checked);
+  dialoguePanel.classList.toggle("is-hidden", !enabled);
+}
+
+function renderDialogueHandling(bundle) {
+  const dialogue = bundle.dialogue;
+  const enabled = Boolean(dialogue?.enabled);
+  dialogueResults.classList.toggle("is-hidden", !enabled);
+
+  if (!enabled) {
+    dialogueScriptPreview.textContent = "대사 토글을 켜면 여기에 스크립트가 표시됩니다.";
+    veoDialogueNote.textContent = "";
+    runwayDialogueNote.textContent = "";
+    klingDialogueNote.textContent = "";
+    dialogueBestPracticeNote.textContent = "";
+    return;
+  }
+
+  dialogueScriptPreview.textContent = dialogue.script || "대사 스크립트가 비어 있습니다.";
+  veoDialogueNote.textContent = dialogue.platformHandling.veo;
+  runwayDialogueNote.textContent = dialogue.platformHandling.runway;
+  klingDialogueNote.textContent = dialogue.platformHandling.kling;
+  dialogueBestPracticeNote.textContent = dialogue.bestPractice;
+}
+
 function switchResultView(viewName) {
   viewTabs.forEach((button) => {
     const isActive = button.dataset.viewTab === viewName;
@@ -393,6 +426,7 @@ function restoreDraft() {
   const raw = localStorage.getItem("ai-video-prompt-studio-brief");
   if (!raw) {
     applyPreset("ad", { mergeOnly: true });
+    updateDialogueVisibility();
     return;
   }
 
@@ -401,13 +435,19 @@ function restoreDraft() {
     for (const [name, value] of Object.entries(data)) {
       const field = form.elements.namedItem(name);
       if (field) {
-        field.value = value;
+        if (field.type === "checkbox") {
+          field.checked = value === true || value === "true" || value === "on";
+        } else {
+          field.value = value;
+        }
       }
     }
     applyPreset(data.presetName || "ad", { mergeOnly: true, preserveValues: true });
+    updateDialogueVisibility();
   } catch (_error) {
     localStorage.removeItem("ai-video-prompt-studio-brief");
     applyPreset("ad", { mergeOnly: true });
+    updateDialogueVisibility();
   }
 }
 
@@ -426,6 +466,7 @@ function renderBundle(bundle) {
 
   renderList(warningsList, bundle.warnings, "현재 초안에는 큰 경고가 없습니다.");
   renderList(checklistList, bundle.checklist, "체크리스트가 없습니다.");
+  renderDialogueHandling(bundle);
 }
 
 function renderRefined(refined) {
@@ -585,16 +626,25 @@ function loadExample() {
     negativePrompt: "rubbery motion, oversmiling, unstable fingers",
     durationSeconds: "5",
     referenceImagePath: "",
+    dialogueEnabled: false,
+    dialogueLanguage: "korean",
+    dialogueVoice: "dry AI voice, restrained delivery",
+    dialogueScript: "",
   };
 
   for (const [name, value] of Object.entries(example)) {
     const field = form.elements.namedItem(name);
     if (field) {
-      field.value = value;
+      if (field.type === "checkbox") {
+        field.checked = Boolean(value);
+      } else {
+        field.value = value;
+      }
     }
   }
 
   applyPreset(example.presetName, { mergeOnly: true, preserveValues: true });
+  updateDialogueVisibility();
   resetRefinedSection("Codex refinement is optional. Use it when you want English polishing, tighter commercial phrasing, or better prompt compression.");
   saveDraft();
 }
@@ -640,8 +690,10 @@ form.addEventListener("submit", async (event) => {
 form.addEventListener("input", () => {
   saveDraft();
   renderSelectionHelpers();
+  updateDialogueVisibility();
 });
 form.addEventListener("change", renderSelectionHelpers);
+form.addEventListener("change", updateDialogueVisibility);
 loadExampleButton.addEventListener("click", loadExample);
 codexRefineButton.addEventListener("click", refineWithCodex);
 copyBestPracticesButton.addEventListener("click", async () => {
@@ -659,5 +711,6 @@ restoreDraft();
 resetRefinedSection("Codex refinement is optional. Use it when you want English polishing, tighter commercial phrasing, or better prompt compression.");
 renderPrinciples();
 renderSelectionHelpers();
+updateDialogueVisibility();
 switchResultView("local");
 checkCodexStatus();
